@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:chat_app/screens/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../../constants/app_constants.dart';
 import '../../constants/routes.dart';
 
@@ -24,9 +28,34 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
+  _handleGoogleBtnClick() {
+    _signInWithGoogle().then((user) {
+      log("\nUser: ${user.user}");
+      log("\nUser Credential: ${user.credential}");
+      Routes.instance.push(widget: const HomeScreen(), context: context);
+    });
+  }
+
+  Future<UserCredential> _signInWithGoogle() async {
+    // Trigger the authentication flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
+  }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       // app bar
       appBar: AppBar(
@@ -59,8 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 elevation: 1,
               ),
               onPressed: () {
-                Routes.instance.pushReplacement(
-                    widget: const HomeScreen(), context: context);
+                _handleGoogleBtnClick();
               },
 
               // google icon

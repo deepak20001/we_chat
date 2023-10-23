@@ -1,7 +1,10 @@
+import 'dart:developer';
 import 'package:chat_app/screens/auth/login_screen.dart';
+import 'package:chat_app/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../constants/app_constants.dart';
+import '../api/apis.dart';
 import '../constants/routes.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -21,9 +24,18 @@ class _SplashScreenState extends State<SplashScreen> {
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
       SystemChrome.setSystemUIOverlayStyle(
           const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-      // navigate to home screen
-      Routes.instance
-          .pushReplacement(widget: const LoginScreen(), context: context);
+
+      if (APIs.auth.currentUser != null) {
+        log("\nUser: ${APIs.auth.currentUser}");
+        
+        // navigate to home screen
+        Routes.instance
+            .pushReplacement(widget: const HomeScreen(), context: context);
+      } else {
+        // navigate to login screen
+        Routes.instance
+            .pushReplacement(widget: const LoginScreen(), context: context);
+      }
     });
   }
 

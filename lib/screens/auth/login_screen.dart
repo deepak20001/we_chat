@@ -33,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
   _handleGoogleBtnClick() {
     // show progress bar
     Dialogs.showProgressBar(context);
-    _signInWithGoogle().then((user) {
+    _signInWithGoogle().then((user) async {
       // to hide progress bar
       Navigator.pop(context);
 
@@ -41,7 +41,14 @@ class _LoginScreenState extends State<LoginScreen> {
         log("\nUser: ${user.user}");
         log("\nUser Credential: ${user.credential}");
 
-        Routes.instance.push(widget: const HomeScreen(), context: context);
+        if ((await APIs.userExists())) {
+          // ignore: use_build_context_synchronously
+          Routes.instance.push(widget: const HomeScreen(), context: context);
+        } else {
+          await APIs.createUser().then((value) {
+            Routes.instance.push(widget: const HomeScreen(), context: context);
+          });
+        }
       }
     });
   }

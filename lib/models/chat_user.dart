@@ -4,7 +4,7 @@ class ChatUser {
   String? name;
   String? createdAt;
   String? lastActive;
-  String? isOnline;
+  bool? isOnline;
   String? id;
   String? pushToken;
   String? email;

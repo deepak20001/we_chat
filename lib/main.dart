@@ -4,8 +4,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'firebase_options.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   // enter full-screen
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
@@ -14,7 +17,6 @@ void main() {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]).then((value) {
-    _initializeFirebase();
     runApp(const MyApp());
   });
 }
@@ -48,10 +50,4 @@ class MyApp extends StatelessWidget {
       home: const SplashScreen(),
     );
   }
-}
-
-_initializeFirebase() async {
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
 }

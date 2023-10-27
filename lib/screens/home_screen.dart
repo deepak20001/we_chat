@@ -1,8 +1,10 @@
+import 'package:chat_app/screens/profile_screen.dart';
 import 'package:chat_app/widgets/chat_user_card.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../api/apis.dart';
 import '../constants/app_constants.dart';
+import '../constants/routes.dart';
 import '../models/chat_user.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -27,7 +29,10 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: const Icon(Icons.search),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Routes.instance
+                  .push(widget: ProfileScreen(user: list[0]), context: context);
+            },
             icon: const Icon(Icons.more_vert),
           ),
         ],

@@ -16,11 +16,7 @@ class APIs {
 
   // for checking if user exists or not
   static Future<bool> userExists() async {
-    return (await firestore
-            .collection("users")
-            .doc(auth.currentUser!.uid)
-            .get())
-        .exists;
+    return (await firestore.collection("users").doc(user.uid).get()).exists;
   }
 
   // for storing self information
@@ -70,5 +66,13 @@ class APIs {
         .collection("users")
         .where("id", isNotEqualTo: user.uid)
         .snapshots();
+  }
+
+  // for updating user info
+  static Future<void> updateUserInfo() async {
+    await firestore.collection("users").doc(user.uid).update({
+      "name": me.name,
+      "about": me.about,
+    });
   }
 }

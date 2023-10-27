@@ -18,6 +18,12 @@ class _HomeScreenState extends State<HomeScreen> {
   List<ChatUser> list = [];
 
   @override
+  void initState() {
+    super.initState();
+    APIs.getSelfInfo();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -31,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             onPressed: () {
               Routes.instance
-                  .push(widget: ProfileScreen(user: list[0]), context: context);
+                  .push(widget: ProfileScreen(user: APIs.me), context: context);
             },
             icon: const Icon(Icons.more_vert),
           ),
@@ -50,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Container(
         color: Colors.blueGrey.shade100,
         child: StreamBuilder(
-            stream: APIs.firestore.collection("users").snapshots(),
+            stream: APIs.getAllUsers(),
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 // if data is loading

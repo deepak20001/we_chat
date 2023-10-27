@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_app/constants/assets_path.dart';
 import 'package:chat_app/screens/auth/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -94,7 +95,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         bottom: 0,
                         right: 15,
                         child: IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            _showBottomSheet();
+                          },
                           icon: Container(
                             height: mq.height * .04,
                             width: mq.width * .09,
@@ -210,5 +213,66 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
     );
+  }
+
+  void _showBottomSheet() {
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        builder: (_) {
+          return ListView(
+            shrinkWrap: true,
+            padding:
+                EdgeInsets.only(top: mq.height * .03, bottom: mq.height * .075),
+            children: [
+              // pick profile picture label
+              const Text(
+                "Pick Profile Picture",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
+
+              SizedBox(height: mq.height * .02),
+
+              // buttons
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // pick from gallery button
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      elevation: 2,
+                      backgroundColor: Colors.blueGrey.shade100,
+                      shape: const CircleBorder(),
+                      fixedSize: Size(mq.width * .3, mq.height * .15),
+                    ),
+                    child: Image.asset(AssetsImages.instance.galleryImage),
+                  ),
+
+                  // take picture from camera button
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      elevation: 2,
+                      backgroundColor: Colors.blueGrey.shade100,
+                      shape: const CircleBorder(),
+                      fixedSize: Size(mq.width * .3, mq.height * .15),
+                    ),
+                    child: Image.asset(AssetsImages.instance.cameraImage),
+                  ),
+                ],
+              ),
+            ],
+          );
+        });
   }
 }

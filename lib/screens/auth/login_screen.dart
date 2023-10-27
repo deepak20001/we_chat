@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
+import 'package:chat_app/constants/assets_path.dart';
 import 'package:chat_app/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -120,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               // google icon
               icon: Image.asset(
-                "images/google.png",
+                AssetsIcons.instance.appIcon,
                 height: mq.height * .03,
               ),
 

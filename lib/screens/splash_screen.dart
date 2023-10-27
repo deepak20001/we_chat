@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:chat_app/constants/assets_path.dart';
 import 'package:chat_app/screens/auth/login_screen.dart';
 import 'package:chat_app/screens/home_screen.dart';
 import 'package:flutter/material.dart';
@@ -22,12 +23,13 @@ class _SplashScreenState extends State<SplashScreen> {
     Future.delayed(const Duration(milliseconds: 1500), () {
       // exit full screen
       SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-      SystemChrome.setSystemUIOverlayStyle(
-          const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
+      SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+        systemNavigationBarColor: Colors.white,
+      ));
 
       if (APIs.auth.currentUser != null) {
         log("\nUser: ${APIs.auth.currentUser}");
-        
+
         // navigate to home screen
         Routes.instance
             .pushReplacement(widget: const HomeScreen(), context: context);
@@ -58,7 +60,7 @@ class _SplashScreenState extends State<SplashScreen> {
             top: mq.height * .15,
             right: mq.width * .25,
             width: mq.width * .5,
-            child: Image.asset("images/icon.png"),
+            child: Image.asset(AssetsIcons.instance.appIcon),
           ),
 
           // google login button

@@ -2,7 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../constants/app_constants.dart';
+import '../constants/routes.dart';
 import '../models/chat_user.dart';
+import '../screens/chat_screen.dart';
 
 class ChatUserCard extends StatefulWidget {
   final ChatUser user;
@@ -25,7 +27,11 @@ class _ChatUserCardState extends State<ChatUserCard> {
         borderRadius: BorderRadius.circular(15.0),
       ),
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          // for navigating to chat screen
+          Routes.instance
+              .push(widget: ChatScreen(user: widget.user), context: context);
+        },
         child: ListTile(
           // user profile pic
           leading: ClipRRect(

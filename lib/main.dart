@@ -13,7 +13,7 @@ void main() async {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
   // for setting orientation to portrait only
-  SystemChrome.setPreferredOrientations([
+  SystemChrome.setPreferredOrientations([  
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]).then((value) {

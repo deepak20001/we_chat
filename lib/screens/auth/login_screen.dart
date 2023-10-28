@@ -100,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
             right: _isAnimate ? mq.width * .25 : -mq.width * .5,
             width: mq.width * .5,
             duration: const Duration(seconds: 1),
-            child: Image.asset("images/icon.png"),
+            child: Image.asset(AssetsIcons.instance.appIcon),
           ),
 
           // google login button
@@ -121,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
               // google icon
               icon: Image.asset(
-                AssetsIcons.instance.appIcon,
+                AssetsImages.instance.googleImage,
                 height: mq.height * .03,
               ),
 

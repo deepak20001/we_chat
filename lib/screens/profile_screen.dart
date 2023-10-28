@@ -1,4 +1,7 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+// ignore_for_file: public_member_api_docs, sort_constructors_first, use_build_context_synchronously
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/constants/assets_path.dart';
 import 'package:chat_app/screens/auth/login_screen.dart';
@@ -9,6 +12,7 @@ import '../constants/app_constants.dart';
 import '../constants/routes.dart';
 import '../helper/dialogs.dart';
 import '../models/chat_user.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ProfileScreen extends StatefulWidget {
   final ChatUser user;
@@ -23,6 +27,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
+  String? _image;
 
   @override
   Widget build(BuildContext context) {
@@ -75,21 +80,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Stack(
                     children: [
                       // user profile pic
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(mq.height * .1),
-                        child: CachedNetworkImage(
-                          progressIndicatorBuilder: (context, url, progress) =>
-                              Center(
-                            child: CircularProgressIndicator(
-                              value: progress.progress,
+                      _image != null
+                          ?
+                          // local image
+                          ClipRRect(
+                              borderRadius:
+                                  BorderRadius.circular(mq.height * .1),
+                              child: Image.file(
+                                File(_image!),
+                                width: mq.height * .2,
+                                height: mq.height * .2,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          :
+                          // image from server
+                          ClipRRect(
+                              borderRadius:
+                                  BorderRadius.circular(mq.height * .1),
+                              child: CachedNetworkImage(
+                                progressIndicatorBuilder:
+                                    (context, url, progress) => Center(
+                                  child: CircularProgressIndicator(
+                                    value: progress.progress,
+                                  ),
+                                ),
+                                fit: BoxFit.cover,
+                                imageUrl: widget.user.image.toString(),
+                                height: mq.height * .2,
+                                width: mq.height * .2,
+                              ),
                             ),
-                          ),
-                          fit: BoxFit.fill,
-                          imageUrl: widget.user.image.toString(),
-                          height: mq.height * .2,
-                          width: mq.height * .2,
-                        ),
-                      ),
                       // edit image button
                       Positioned(
                         bottom: 0,
@@ -248,7 +269,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   // pick from gallery button
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      final ImagePicker picker = ImagePicker();
+                      // Pick an image
+                      final XFile? image = await picker.pickImage(
+                        source: ImageSource.gallery,
+                        imageQuality: 80,
+                      );
+                      if (image != null) {
+                        log("Image Path: ${image.path} -- MimeType: ${image.mimeType}");
+
+                        setState(() {
+                          _image = image.path;
+                        });
+                      }
+
+                      APIs.updateProfilePicture(File(_image!));
+                      // for hiding bottom sheet
+                      Navigator.pop(context);
+                    },
                     style: ElevatedButton.styleFrom(
                       elevation: 2,
                       backgroundColor: Colors.blueGrey.shade100,
@@ -260,7 +299,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                   // take picture from camera button
                   ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      final ImagePicker picker = ImagePicker();
+                      // Pick an image
+                      final XFile? image = await picker.pickImage(
+                        source: ImageSource.camera,
+                        imageQuality: 80,
+                      );
+                      if (image != null) {
+                        log("Image Path: ${image.path}");
+
+                        setState(() {
+                          _image = image.path;
+                        });
+                      }
+
+                      APIs.updateProfilePicture(File(_image!));
+                      // for hiding bottom sheet
+                      Navigator.pop(context);
+                    },
                     style: ElevatedButton.styleFrom(
                       elevation: 2,
                       backgroundColor: Colors.blueGrey.shade100,

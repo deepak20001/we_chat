@@ -1,5 +1,6 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:chat_app/api/apis.dart';
+import 'package:chat_app/helper/my_date_util.dart';
 import 'package:flutter/material.dart';
 import 'package:chat_app/models/message.dart';
 
@@ -21,11 +22,16 @@ class _MessageCardState extends State<MessageCard> {
   Widget build(BuildContext context) {
     return APIs.user.uid == widget.message.fromId
         ? _greenMessage()
-        : _greyMessage();
+        : _blueMessage();
   }
 
   // sender or another user message
-  Widget _greyMessage() {
+  Widget _blueMessage() {
+    // update last read message if sender and receiver are different
+    if (widget.message.read!.isEmpty) {
+      APIs.updateMessageReadStatus(widget.message);
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -38,8 +44,8 @@ class _MessageCardState extends State<MessageCard> {
               vertical: mq.height * .01,
             ),
             decoration: BoxDecoration(
-              color: Colors.blueGrey.shade200,
-              border: Border.all(color: Colors.blueGrey.shade500),
+              color: Colors.blue.shade100,
+              border: Border.all(color: Colors.blue.shade800),
               borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(30),
                 topRight: Radius.circular(30),
@@ -59,7 +65,8 @@ class _MessageCardState extends State<MessageCard> {
         Padding(
           padding: EdgeInsets.only(right: mq.width * .04),
           child: Text(
-            widget.message.sent.toString(),
+            MyDateUtil.getFormattedTime(
+                context: context, time: widget.message.sent!),
             style: const TextStyle(
               fontSize: 13,
               color: Colors.black54,
@@ -82,18 +89,20 @@ class _MessageCardState extends State<MessageCard> {
             SizedBox(width: mq.width * .04),
 
             // double tick blue icon for message read
-            const Icon(
-              Icons.done_all_rounded,
-              color: Colors.blue,
-              size: 20,
-            ),
+            if (widget.message.read!.isNotEmpty)
+              const Icon(
+                Icons.done_all_rounded,
+                color: Colors.blue,
+                size: 20,
+              ),
 
             // for adding some space
             const SizedBox(width: 2),
 
-            // read time
+            // sent time
             Text(
-              "${widget.message.read}12:00 AM",
+              MyDateUtil.getFormattedTime(
+                  context: context, time: widget.message.sent!),
               style: const TextStyle(
                 fontSize: 13,
                 color: Colors.black54,

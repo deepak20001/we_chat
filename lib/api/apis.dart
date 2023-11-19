@@ -140,7 +140,28 @@ class APIs {
     );
 
     final ref = firestore
-        .collection("chats/${getConversationID(chatUser.id!)}/messages");
-    await ref.doc().set(message.toJson());
+        .collection("chats/${getConversationID(chatUser.id!)}/messages/");
+    await ref.doc(time).set(message.toJson());
+  }
+
+  // update read status of message
+  // used fromId as we want to update the read status of the other end msg sending person not our own read status
+  static Future<void> updateMessageReadStatus(Message message) async {
+    firestore
+        .collection("chats/${getConversationID(message.fromId!)}/messages/")
+        .doc(message.sent)
+        .update(
+      {"read": DateTime.now().millisecondsSinceEpoch.toString()},
+    );
+  }
+
+  // get only last message of a specific chat
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getLastMessage(
+      ChatUser user) {
+    return firestore
+        .collection("chats/${getConversationID(user.id!)}/messages/")
+        .orderBy("sent", descending: true)
+        .limit(1)
+        .snapshots();
   }
 }

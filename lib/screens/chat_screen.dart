@@ -1,9 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../api/apis.dart';
 import '../constants/app_constants.dart';
 import '../models/chat_user.dart';
@@ -250,7 +252,20 @@ class _ChatScreenState extends State<ChatScreen> {
 
                   // take image from camera button
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () async {
+                      final ImagePicker picker = ImagePicker();
+
+                      // Pick an image
+                      final XFile? image = await picker.pickImage(
+                        source: ImageSource.camera,
+                        imageQuality: 70,
+                      );
+                      if (image != null) {
+                        log("Image Path: ${image.path} -- MimeType: ${image.mimeType}");
+                      }
+
+                      await APIs.sendChatImage(widget.user, File(image!.path));
+                    },
                     icon: const Icon(
                       Icons.camera_alt_rounded,
                     ),
@@ -268,7 +283,7 @@ class _ChatScreenState extends State<ChatScreen> {
           MaterialButton(
             onPressed: () {
               if (_textController.text.isNotEmpty) {
-                APIs.sendMessage(widget.user, _textController.text);
+                APIs.sendMessage(widget.user, _textController.text, Type.text);
                 _textController.clear();
               }
             },

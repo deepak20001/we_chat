@@ -72,7 +72,9 @@ class _ChatUserCardState extends State<ChatUserCard> {
                 // last message
                 subtitle: Text(
                   _message != null
-                      ? _message!.msg.toString()
+                      ? _message!.type == Type.image
+                          ? "image"
+                          :   _message!.msg.toString()
                       : widget.user.about.toString(),
                   maxLines: 1,
                 ),

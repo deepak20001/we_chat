@@ -15,7 +15,7 @@ void main() async {
   // for setting orientation to portrait only
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown,
+    DeviceOrientation.portraitDown, 
   ]).then((value) {
     runApp(const MyApp());
   });

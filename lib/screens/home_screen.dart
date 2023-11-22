@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:chat_app/screens/profile_screen.dart';
 import 'package:chat_app/widgets/chat_user_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../api/apis.dart';
 import '../constants/app_constants.dart';
@@ -29,6 +32,21 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     APIs.getSelfInfo();
+
+    // for setting user status to active
+    APIs.updateActiveStatus(true);
+
+    // for updating user active status according to lifecycle events
+    // resume -- active or online
+    // pause -- inactive or offilne
+    SystemChannels.lifecycle.setMessageHandler((message) {
+      log("Message: $message");
+
+      if (message.toString().contains("resume")) APIs.updateActiveStatus(true);
+      if (message.toString().contains("pause")) APIs.updateActiveStatus(false);
+
+      return Future.value(message);
+    });
   }
 
   @override
@@ -39,8 +57,8 @@ class _HomeScreenState extends State<HomeScreen> {
       child: WillPopScope(
         // if search is on & back button is pressed then close search
         // or else simple close current screen on back button click
-        onWillPop: (){
-          if(_isSearching) {
+        onWillPop: () {
+          if (_isSearching) {
             setState(() {
               _isSearching = !_isSearching;
             });
@@ -66,10 +84,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     onChanged: (val) {
                       // search logic
                       _searchList.clear();
-      
+
                       for (var i in _list) {
                         if (i.name!.toLowerCase().contains(val.toLowerCase()) ||
-                            i.email!.toLowerCase().contains(val.toLowerCase())) {
+                            i.email!
+                                .toLowerCase()
+                                .contains(val.toLowerCase())) {
                           _searchList.add(i);
                         }
                         setState(() {
@@ -121,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       return const Center(
                         child: CircularProgressIndicator(),
                       );
-      
+
                     // if some or all data is loaded then show it
                     case ConnectionState.active:
                     case ConnectionState.done:
@@ -130,14 +150,15 @@ class _HomeScreenState extends State<HomeScreen> {
                               ?.map((e) => ChatUser.fromJson(e.data()))
                               .toList() ??
                           [];
-      
+
                       if (_list.isNotEmpty) {
                         return ListView.builder(
                             physics: const BouncingScrollPhysics(),
                             padding: EdgeInsets.only(
                                 top: mq.height * .01, bottom: mq.height * .065),
-                            itemCount:
-                                _isSearching ? _searchList.length : _list.length,
+                            itemCount: _isSearching
+                                ? _searchList.length
+                                : _list.length,
                             itemBuilder: (context, index) {
                               return ChatUserCard(
                                   user: _isSearching

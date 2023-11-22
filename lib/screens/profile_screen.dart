@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/constants/assets_path.dart';
 import 'package:chat_app/screens/auth/login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import '../api/apis.dart';
@@ -34,20 +35,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
+        // appBar
         appBar: AppBar(
           title: const Text("Profile Screen"),
         ),
+
+        // floating button to log out
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(bottom: 8.0),
           child: FloatingActionButton.extended(
             backgroundColor: Colors.redAccent,
             onPressed: () async {
+              // for showing progress dialog
               Dialogs.showProgressBar(context);
+
+              await APIs.updateActiveStatus(false);
+
+              // sign out from app
               await APIs.auth.signOut().then((value) async {
                 await GoogleSignIn().signOut().then((value) {
                   // for hiding progress dialog
                   Navigator.pop(context);
+
+                  // for moving from home screen
                   Navigator.pop(context);
+
+                  APIs.auth = FirebaseAuth.instance;
+
+                  // replacing home screen with login screen
                   Routes.instance.pushReplacement(
                       widget: const LoginScreen(), context: context);
                 });
@@ -65,6 +80,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
         ),
+
+        // body
         body: Form(
           key: _formKey,
           child: Padding(

@@ -42,8 +42,14 @@ class _HomeScreenState extends State<HomeScreen> {
     SystemChannels.lifecycle.setMessageHandler((message) {
       log("Message: $message");
 
-      if (message.toString().contains("resume")) APIs.updateActiveStatus(true);
-      if (message.toString().contains("pause")) APIs.updateActiveStatus(false);
+      if (APIs.auth.currentUser != null) {
+        if (message.toString().contains("resume")) {
+          APIs.updateActiveStatus(true);
+        }
+        if (message.toString().contains("pause")) {
+          APIs.updateActiveStatus(false);
+        }
+      }
 
       return Future.value(message);
     });
@@ -113,7 +119,9 @@ class _HomeScreenState extends State<HomeScreen> {
               IconButton(
                 onPressed: () {
                   Routes.instance.push(
-                      widget: ProfileScreen(user: APIs.me), context: context);
+                    widget: ProfileScreen(user: APIs.me),
+                    context: context,
+                  );
                 },
                 icon: const Icon(Icons.more_vert),
               ),

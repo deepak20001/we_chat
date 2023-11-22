@@ -3,12 +3,14 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_app/screens/view_profile_screen.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../api/apis.dart';
 import '../constants/app_constants.dart';
+import '../constants/routes.dart';
 import '../helper/my_date_util.dart';
 import '../models/chat_user.dart';
 import '../models/message.dart';
@@ -149,7 +151,12 @@ class _ChatScreenState extends State<ChatScreen> {
   // app bar widget
   Widget _appBar() {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Routes.instance.push(
+          widget: ViewProfileScreen(user: widget.user),
+          context: context,
+        );
+      },
       child: StreamBuilder(
           stream: APIs.getUserInfo(widget.user),
           builder: (context, snapshot) {

@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first, use_build_context_synchronously
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/helper/my_date_util.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../constants/app_constants.dart';
 import '../models/chat_user.dart';
@@ -65,6 +66,8 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                   width: mq.width,
                   height: mq.height * .03,
                 ),
+
+                // user profile picture
                 ClipRRect(
                   borderRadius: BorderRadius.circular(mq.height * .1),
                   child: CachedNetworkImage(
@@ -78,13 +81,18 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                     imageUrl: widget.user.image.toString(),
                     height: mq.height * .2,
                     width: mq.height * .2,
+                    errorWidget: (context, url, error) => const CircleAvatar(
+                      child: Icon(CupertinoIcons.person),
+                    ),
                   ),
                 ),
+
                 // for adding some space
                 SizedBox(
                   width: mq.width,
                   height: mq.height * .03,
                 ),
+
                 // user email
                 Text(
                   widget.user.email.toString(),
@@ -93,11 +101,13 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
                     fontSize: 16,
                   ),
                 ),
+
                 // for adding some space
                 SizedBox(
                   width: mq.width,
                   height: mq.height * .02,
                 ),
+
                 // user about
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,

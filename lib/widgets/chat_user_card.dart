@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chat_app/widgets/dialogs/profile_dialog.dart';
 import 'package:flutter/material.dart';
 import '../api/apis.dart';
 import '../constants/app_constants.dart';
@@ -49,18 +50,26 @@ class _ChatUserCardState extends State<ChatUserCard> {
 
               return ListTile(
                 // user profile pic
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(mq.height * .03),
-                  child: CachedNetworkImage(
-                    progressIndicatorBuilder: (context, url, progress) =>
-                        Center(
-                      child: CircularProgressIndicator(
-                        value: progress.progress,
+                leading: InkWell(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (_) => ProfileDialog(user: widget.user),
+                    );
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(mq.height * .03),
+                    child: CachedNetworkImage(
+                      progressIndicatorBuilder: (context, url, progress) =>
+                          Center(
+                        child: CircularProgressIndicator(
+                          value: progress.progress,
+                        ),
                       ),
+                      imageUrl: widget.user.image.toString(),
+                      height: mq.height * .055,
+                      width: mq.height * .055,
                     ),
-                    imageUrl: widget.user.image.toString(),
-                    height: mq.height * .055,
-                    width: mq.height * .055,
                   ),
                 ),
 
@@ -74,7 +83,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
                   _message != null
                       ? _message!.type == Type.image
                           ? "image"
-                          :   _message!.msg.toString()
+                          : _message!.msg.toString()
                       : widget.user.about.toString(),
                   maxLines: 1,
                 ),
